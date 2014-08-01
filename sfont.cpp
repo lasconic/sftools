@@ -30,6 +30,7 @@
 #include "time.h"
 
 #include <QtCore/QFile>
+#include <QDebug>
 
 extern bool smallSf;    // create small sf
 
@@ -1518,6 +1519,8 @@ bool SoundFont::writeCode()
                   QList<GeneratorList*> gl;
                   foreach(GeneratorList* g, z->generators) {
                         const char* name = generatorNames[g->gen];
+                        if (g->gen == Gen_Attenuation && g->amount.uword > 250)
+                              g->amount.uword = 100;
                         if (g->gen == Gen_KeyRange) {
                               keyLo = g->amount.lo;
                               keyHi = g->amount.hi;
@@ -1532,6 +1535,7 @@ bool SoundFont::writeCode()
                               gl.append(g);
                         if (smallSf && g->gen == Gen_Pan)
                               g->amount.uword = 0;
+
                         }
                   int idx3 = 0;
                   foreach(GeneratorList* g, gl) {
